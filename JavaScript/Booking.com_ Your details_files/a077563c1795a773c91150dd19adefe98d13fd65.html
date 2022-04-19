@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<!-- saved from url=(0105)https://t-cf.bstatic.com/static/tag_container/tag_container/a077563c1795a773c91150dd19adefe98d13fd65.html -->
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>Booking.com</title>
+    
+</head>
+
+<body>
+    <script type="text/javascript" async="" src="./saved_resource"></script><script>
+        'use strict';
+
+        var SECURE_DOMAIN = 'https://secure.booking.com';
+        var STORE_URL = 'www.booking.com';
+
+        loadPolyfill();
+
+        window.onerror = function () {
+            dispatchActionToParent(createAction('TAG_CONTAINER_GLOBAL_ERROR'));
+        };
+
+        /* eslint-disable */
+        function actionHandler(event) {
+            if (event.origin !== SECURE_DOMAIN) {
+                return;
+            }
+            // Converting event.data to Object for IE 10 support
+            var parsedData = parseReceivedData(event);
+            if (!!parsedData && !!parsedData.type) {
+                switch (parsedData.type) {
+                    case 'LOAD_BEACON':
+                        if (!!parsedData && !!parsedData.payload && !!parsedData.payload.cartToken) {
+                            loadBeacon(parsedData.payload.cartToken);
+                        }
+
+                        break;
+                    default:
+                        break;
+                }
+            }
+        }
+
+        function createAction(name, payload) {
+            if (!name) {
+                return;
+            }
+
+            var action = {
+                "type": name
+            };
+
+            if (!!payload) {
+                action = Object.assign({}, action, {
+                    payload: payload
+                });
+            }
+
+            return action;
+        }
+
+        function dispatchActionToParent(action) {
+            if (!action) {
+                return;
+            }
+            var parsedAction;
+            // Browser compatibility(mostly IE):: Converting 'data' attribute of postMessage to be string.
+            try {
+                parsedAction = JSON.stringify(action);
+            } catch(err){
+                return;
+            }
+
+            try{
+                window.parent.postMessage(parsedAction, SECURE_DOMAIN);
+            } catch(err){
+                return ;
+            }
+        }
+
+        function doLoadTagContainerSuccess() {
+            return createAction('LOAD_TAG_CONTAINER_SUCCESS');
+        }
+
+        function loadBeacon(cartToken) {
+            var url = ('https:' == document.location.protocol ? 'https://' : 'http://') +
+                "beacon.riskified.com?shop=" + STORE_URL + "&sid=" + cartToken;
+            var s = document.createElement('script');
+            s.type = 'text/javascript';
+            s.async = true;
+            s.src = url;
+            var x = document.getElementsByTagName('script')[0];
+            x.parentNode.insertBefore(s, x);
+        }
+
+        function getTagContainerCookie() {
+            return document.cookie
+                .split(";")
+                .map(function(s) {
+                    return s.trim().split("=");
+                })
+                .reduce(function(resObj, keyValArr) {
+                    resObj[keyValArr[0]] = keyValArr[1];
+                    return resObj;
+                }, {});
+        }
+
+        function parseReceivedData(event){
+            var parsedData = {};
+            if (!!event.data && (typeof event.data === 'string' || event.data instanceof String) ){
+                //Browser supports only string type as event.data
+                try{
+                    parsedData = JSON.parse(event.data);
+                } catch (err) {
+                    return;
+                }
+            } else if (event.data && typeof event.data === 'object') {
+                parsedData = event.data;
+            } else{
+                // event.data is neither string or object type
+                return;
+            }
+            return parsedData;
+        }
+
+        function loadPolyfill() {
+            /*
+            src: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/assign
+            */
+            if (typeof Object.assign != 'function') {
+                (function() {
+                    Object.assign = function(target) {
+                        "use strict";
+                        if (target === undefined || target === null) {
+                            throw new TypeError('Cannot convert undefined or null to object');
+                        }
+
+                        var output = Object(target);
+                        for (var index = 1; index < arguments.length; index++) {
+                            var source = arguments[index];
+                            if (source !== undefined && source !== null) {
+                                for (var nextKey in source) {
+                                    if (Object.prototype.hasOwnProperty.call(source, nextKey)) {
+                                        output[nextKey] = source[nextKey];
+                                    }
+                                }
+                            }
+                        }
+                        return output;
+                    };
+                }());
+            }
+
+        }
+
+        function notifyFinishedLoading() {
+            dispatchActionToParent(doLoadTagContainerSuccess());
+        }
+
+        if (window.attachEvent) {
+            window.attachEvent('onmessage', actionHandler);
+            window.attachEvent('onload', notifyFinishedLoading);
+        } else {
+            window.addEventListener('message', actionHandler, false);
+            window.addEventListener('load', notifyFinishedLoading, false);
+        }
+        /* eslint-enable */
+    </script>
+
+
+</body></html>
