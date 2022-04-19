@@ -1,33 +1,19 @@
-// Button click event
-b_tt_holder_1.addEventListener('click', {
-    handleEvent(event) {
-      hprt_nos_select_32934401_211007526_0_1_0.value = '1';
-      console.log('Selected rooms set to -> 1');
+function addButtonEvent() {
+    var select = document.querySelector('#hprt_nos_select_32934401_211007526_0_1_0'),
+        input = document.getElementsByClassName('txp-bui-main-pp bui-button bui-button--primary  hp_rt_input js-reservation-button px--fw-cta');
+
+    if (document.getElementById('b_tt_holder_1') == null ) {
+       input = document.getElementById('b_tt_holder_2');
     }
-});
+    else if (document.getElementById('b_tt_holder_2') == null) {
+        input = document.getElementById('b_tt_holder_1');
+    }
 
-
-function checkTable() {
-
-  var n1 = document.getElementById("hprt-table").rows.length;
-
-  var i=0,j=0;
-  var str="";
-   
-  for(i=0; i<n1;i++){
-   
-    var n2 = document.getElementById("hprt-table").rows[i].cells.length;
-     
-    for(j=0; j<n2;j++){
-     
-      var x=document.getElementById("hprt-table").rows[i].cells.item(j).innerHTML;\
-       
-          str=str+x+":"; 
-    };
-  str=str+"#";
-     
-  };
-     document.getElementById("tablecontent").innerHTML=str;
+    select.addEventListener('change', function() {
+        console.log('Add button event');
+    });
+    input.addEventListener('click', function() {
+        select.value = 1;
+        select.dispatchEvent(new Event('change'));
+    });
 };
-
-checkTable();

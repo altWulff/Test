@@ -1,4 +1,3 @@
-
 function printInformation() {
     const roomName = document.querySelector('.bui-list__item').innerText;
     const priceDetails = document.getElementsByClassName('bp-price-details__charge-value e2e-price-details__total-charge--user');
