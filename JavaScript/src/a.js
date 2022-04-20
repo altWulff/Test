@@ -1,6 +1,6 @@
-function requesInfo(indx) {	
-	var pers  = document.getElementsByClassName('hprt-table-cell hprt-table-cell-occupancy')[indx]
-	var getCls = pers.nextElementSibling.classList;
+function requestInfo(indx) {	
+	var tableCell  = document.getElementsByClassName('hprt-table-cell hprt-table-cell-occupancy')[indx]
+	var getCls = tableCell.nextElementSibling.classList;
 	var roomPrice = document.getElementsByClassName(getCls[0])[indx].getElementsByClassName('prco-valign-middle-helper')[0].innerText;
 	var ocupacy = document.getElementsByClassName('hprt-table-cell hprt-table-cell-occupancy')[indx].getElementsByClassName('hprt-block')[0].innerText;
 	var seectId = document.getElementsByClassName(' hprt-table-cell hprt-table-room-select')[indx].getElementsByTagName('select')[0].id;
@@ -16,8 +16,8 @@ function getArrayMin(array) {
 function findMinWithMaxPersons(array, maxPersons) {
 	var newArray = [];
 	for (var i = 0; i < array.length; i++) {
-		if (requesInfo(i)[1] == maxPersons) {
-			newArray.push(requesInfo(i)[2]);
+		if (requestInfo(i)[1] == maxPersons) {
+			newArray.push(requestInfo(i)[2]);
 		};	
 	};
 	return getArrayMin(newArray);
@@ -26,7 +26,7 @@ function findMinWithMaxPersons(array, maxPersons) {
 
 function getIndexFromArray(array, number) {
 	for (var i = 0; i < array.length; i++) {
-		if (requesInfo(i)[2] == number) {
+		if (requestInfo(i)[2] == number) {
 			return i;
 		};
 	};	
@@ -37,7 +37,7 @@ function addButtonEvent() {
 	var table = document.getElementsByClassName('hprt-table-cell hprt-table-cell-occupancy');
 	var chepeastRoom = findMinWithMaxPersons(table, 2);
 	var arrayIndex = getIndexFromArray(table, chepeastRoom); 
-	var selectId = requesInfo(arrayIndex)[0];
+	var selectId = requestInfo(arrayIndex)[0];
     var select = document.querySelector(selectId),
         input = document.getElementsByClassName('txp-bui-main-pp bui-button bui-button--primary  hp_rt_input js-reservation-button px--fw-cta');
 
