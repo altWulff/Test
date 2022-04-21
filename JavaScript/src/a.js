@@ -1,10 +1,23 @@
-function requestInfo(indx) {	
-	var tableCell  = document.getElementsByClassName('hprt-table-cell hprt-table-cell-occupancy')[indx]
-	var getCls = tableCell.nextElementSibling.classList;
-	var roomPrice = document.getElementsByClassName(getCls[0])[indx].getElementsByClassName('prco-valign-middle-helper')[0].innerText;
-	var ocupacy = document.getElementsByClassName('hprt-table-cell hprt-table-cell-occupancy')[indx].getElementsByClassName('hprt-block')[0].innerText;
-	var seectId = document.getElementsByClassName(' hprt-table-cell hprt-table-room-select')[indx].getElementsByTagName('select')[0].id;
-	return Array(String('#'+seectId), parseInt(ocupacy.split(':')[1]), parseFloat(roomPrice.split(' ')[0].slice(4).replace(',', '.')));
+// css div.classes
+var getTableClass = 'hprt-table-cell hprt-table-cell-occupancy',
+    getButtonClass = 'txp-bui-main-pp bui-button bui-button--primary  hp_rt_input js-reservation-button px--fw-cta',
+    getRoomPriceClass = 'prco-valign-middle-helper',
+    getOccupancyClass = 'hprt-table-cell hprt-table-cell-occupancy',
+    getRoomSelectClass = 'hprt-table-cell hprt-table-room-select';
+
+
+function requestInfo(indx) {
+	var tableCell = document.getElementsByClassName(getTableClass)[indx],
+	    getCls = tableCell.nextElementSibling.classList,
+	    roomPrice = document.getElementsByClassName(getCls[0])[indx].getElementsByClassName(getRoomPriceClass)[0].innerText,
+	    occupancy = document.getElementsByClassName(getOccupancyClass)[indx].getElementsByClassName('hprt-block')[0].innerText,
+	    selectId = document.getElementsByClassName(getRoomSelectClass)[indx].getElementsByTagName('select')[0].id;
+
+	var selectInfo = String('#'+selectId),
+	    occupancyInfo = parseInt(occupancy.split(':')[1]),
+	    roomPriceInfo = parseFloat(roomPrice.split(' ')[0].slice(4).replace(',', '.'));
+
+	return Array(selectInfo, occupancyInfo, roomPriceInfo);
 };
 
 
@@ -15,6 +28,7 @@ function getArrayMin(array) {
 
 function findMinWithMaxPersons(array, maxPersons) {
 	var newArray = [];
+
 	for (var i = 0; i < array.length; i++) {
 		if (requestInfo(i)[1] == maxPersons) {
 			newArray.push(requestInfo(i)[2]);
@@ -34,13 +48,14 @@ function getIndexFromArray(array, number) {
 
 
 function addButtonEvent() {
-	var table = document.getElementsByClassName('hprt-table-cell hprt-table-cell-occupancy');
-	var chepeastRoom = findMinWithMaxPersons(table, 2);
-	var arrayIndex = getIndexFromArray(table, chepeastRoom); 
-	var selectId = requestInfo(arrayIndex)[0];
-    var select = document.querySelector(selectId),
-        input = document.getElementsByClassName('txp-bui-main-pp bui-button bui-button--primary  hp_rt_input js-reservation-button px--fw-cta');
+	var table = document.getElementsByClassName(getTableClass),
+	    cheapestRoom = findMinWithMaxPersons(table, 2),
+	    arrayIndex = getIndexFromArray(table, cheapestRoom),
+	    selectId = requestInfo(arrayIndex)[0],
+	    select = document.querySelector(selectId),
+        input = document.getElementsByClassName(getButtonClass);
 
+    // Hack to dynamic button id
     if (document.getElementById('b_tt_holder_1') == null ) {
        input = document.getElementById('b_tt_holder_2');
     }
